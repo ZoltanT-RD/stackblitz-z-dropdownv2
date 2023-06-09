@@ -10,7 +10,7 @@ export default function App() {
       <div style={{ width: '200px', height: '50px' }}>
         <NativeDropdown
           options={[
-            { id: '1', value: 'test11', isDisabled: 'true' },
+            { id: '1', value: 'test11', isDisabled: true },
             { id: '2', label: 'I am a label', value: 'test2' },
             { id: '3', value: 'something' },
             {
@@ -26,6 +26,27 @@ export default function App() {
             { id: '9', value: 'here 5' },
           ]}
           preSelectedOptionId={'6'}
+          onSelectFn={(e) => {
+            console.log(e);
+          }}
+        />
+
+        <hr />
+
+        <NativeDropdown
+          options={[
+            { id: '0', value: '0', isDisabled: true, label: 'must select one' },
+            { id: '1', value: 'test11', isDisabled: true },
+            { id: '2', label: 'I am a label', value: 'test2' },
+            { id: '3', value: 'something' },
+            {
+              id: '4',
+              label: 'I am an annoyingly long label! coz why not?!',
+              value: 'else',
+              isDisabled: true,
+            },
+            { id: '5', value: 'here' },
+          ]}
           onSelectFn={(e) => {
             console.log(e);
           }}

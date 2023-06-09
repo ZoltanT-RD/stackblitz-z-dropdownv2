@@ -40,8 +40,6 @@ const NativeDropdown = ({
   );
   const [isSleveOpen, setIsSleveOpen] = useState(false);
 
-  const selectableOptions = options.filter((e) => !e.isDisabled); // todo utilise this instead of constantly filtering for it
-
   useEffect(() => {
     if (isSleveOpen) {
       document
@@ -84,6 +82,7 @@ const NativeDropdown = ({
     width: '100%',
     backgroundColor: 'hotpink',
     position: 'relative',
+    zIndex: 20,
     top: '50px',
     height: 'fit-content',
     maxHeight: '200px',
@@ -129,7 +128,6 @@ const NativeDropdown = ({
     e.preventDefault();
     switch (e.code) {
       case 'ArrowUp':
-        //selectPrevious();
         const prevValid = tryGetPreviousValid(options, selectedOption);
         if (prevValid) {
           //console.log('going uppa');
@@ -137,16 +135,12 @@ const NativeDropdown = ({
         }
         break;
       case 'ArrowDown':
-        selectNext();
+        const nextValid = tryGetNextValid(options, selectedOption);
+        if (nextValid) {
+          //console.log('down we go');
+          setSelectedOption(nextValid);
+        }
         break;
-    }
-  }
-
-  function selectPrevious() {
-    const prevValid = tryGetPreviousValid(options, selectedOption);
-    if (prevValid) {
-      //console.log('going uppa');
-      setSelectedOption(prevValid);
     }
   }
 
@@ -157,7 +151,7 @@ const NativeDropdown = ({
     const currentIndex = options.findIndex((e) => e.id === selectedOption.id);
     if (currentIndex !== 0) {
       for (let i = currentIndex - 1; i > 0; i--) {
-        console.log(`loop i: ${i}`);
+        //console.log(`loop i: ${i}`);
         if (options[i].isDisabled !== true) return options[i];
       }
     }
@@ -166,23 +160,14 @@ const NativeDropdown = ({
 
   // ------------------------------------------
 
-  function selectNext() {
-    const nextValid = tryGetNextValid(options, selectedOption);
-    if (nextValid) {
-      console.log('down we go');
-      setSelectedOption(nextValid);
-    }
-  }
-
   function tryGetNextValid(
     options: DropdownItem[],
     selectedOption: DropdownItem
   ): DropdownItem | false {
     const currentIndex = options.findIndex((e) => e.id === selectedOption.id);
-
     if (currentIndex !== options.length - 1) {
       for (let i = currentIndex + 1; i < options.length; i++) {
-        console.log(`loop i: ${i}`);
+        //console.log(`loop i: ${i}`);
         if (options[i].isDisabled !== true) return options[i];
       }
     }
@@ -190,7 +175,7 @@ const NativeDropdown = ({
   }
 
   return (
-    <div id="dropd" style={wrapperStyle}>
+    <div style={wrapperStyle}>
       {!isReadOnly ? (
         <Fragment>
           {isOnMobile ? (
@@ -203,10 +188,10 @@ const NativeDropdown = ({
                 onSelectFn(options.find((o) => o.value == e.target.value));
               }}
             >
-              {options.map((option, i) => {
+              {options.map((option) => {
                 return (
                   <option
-                    key={i}
+                    key={option.id}
                     value={option.value}
                     disabled={option.isDisabled}
                     data-qa={`value-${option.value}`}
@@ -219,7 +204,6 @@ const NativeDropdown = ({
             </select>
           ) : (
             <ul
-              id="sleve"
               style={{ ...sleveStyle, display: isSleveOpen ? 'block' : 'none' }}
               tabIndex={1}
               onKeyUp={sleveOnKeyUp}
@@ -259,7 +243,6 @@ const NativeDropdown = ({
       ) : null}
 
       <input
-        id="imp"
         tabIndex={0}
         readOnly
         onKeyUp={triggerOnKeyUp}
